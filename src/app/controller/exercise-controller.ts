@@ -9,11 +9,7 @@ export class ExerciseController {
   }
 
   async getAllExercises(req: Request, res: Response) {
-    try {
-      const allExercises = await this.exerciseService.getAllExercises();
-      return res.status(200).json(allExercises);
-    } catch {
-      return res.sendStatus(500);
-    }
+    const allExercises = await this.exerciseService.getAllExercises();
+    return res.status(200).json(allExercises);
   }
 }
