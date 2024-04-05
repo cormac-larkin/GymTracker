@@ -1,9 +1,11 @@
-import connectionPool, { PgPool } from "../../postgres/pg-pool";
+import { PgPool } from "../../postgres/pg-pool";
 
-export abstract class BaseDao {
+abstract class BaseDao {
   protected readonly connectionPool: PgPool;
 
-  constructor() {
-    this.connectionPool = connectionPool;
+  constructor(pgPool: PgPool) {
+    this.connectionPool = pgPool;
   }
 }
+
+export default BaseDao;

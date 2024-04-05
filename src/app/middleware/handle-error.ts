@@ -8,7 +8,7 @@ export const handleError: ErrorRequestHandler = (
   next: NextFunction
 ) => {
   console.error(
-    `*** The following error occurred at the '${req.originalUrl}' endpoint ***`
+    `*** The following error occurred during a call to the '${req.originalUrl}' endpoint ***`
   );
   console.error(err);
   return res.sendStatus(500);

@@ -1,6 +1,6 @@
-import { BaseDao } from "./base-dao";
+import BaseDao from "./base-dao";
 
-export class ExerciseDao extends BaseDao {
+class ExerciseDao extends BaseDao {
   public async getAllExercises(): Promise<Exercise[]> {
     const result = await this.connectionPool.query({
       text: `SELECT
@@ -17,3 +17,5 @@ export class ExerciseDao extends BaseDao {
     return result.rows as Exercise[];
   }
 }
+
+export default ExerciseDao;

@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response, Router } from "express";
-import { ExerciseController } from "../controller/exercise-controller";
-import { ExerciseDao } from "../dao/exercise-dao";
-import { ExerciseService } from "../service/exercise-service";
+import ExerciseController from "../controller/exercise-controller";
+import ExerciseDao from "../dao/exercise-dao";
+import ExerciseService from "../service/exercise-service";
+import connectionPool from "../../postgres/pg-pool";
 
 const router = Router();
 
-const exerciseDao = new ExerciseDao();
+const exerciseDao = new ExerciseDao(connectionPool);
 const exerciseService = new ExerciseService(exerciseDao);
 const exerciseController = new ExerciseController(exerciseService);
 

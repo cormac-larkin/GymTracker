@@ -1,6 +1,6 @@
-import { ExerciseDao } from "../dao/exercise-dao";
+import ExerciseDao from "../dao/exercise-dao";
 
-export class ExerciseService {
+class ExerciseService {
   private readonly exerciseDao: ExerciseDao;
 
   constructor(exerciseDao: ExerciseDao) {
@@ -12,3 +12,5 @@ export class ExerciseService {
     return allExercises;
   }
 }
+
+export default ExerciseService;

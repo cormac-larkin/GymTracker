@@ -1,7 +1,7 @@
-import { ExerciseService } from "../service/exercise-service";
 import { Request, Response } from "express";
+import ExerciseService from "../service/exercise-service";
 
-export class ExerciseController {
+class ExerciseController {
   private readonly exerciseService: ExerciseService;
 
   constructor(exerciseService: ExerciseService) {
@@ -13,3 +13,5 @@ export class ExerciseController {
     return res.status(200).json(allExercises);
   }
 }
+
+export default ExerciseController;

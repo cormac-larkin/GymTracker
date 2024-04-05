@@ -4,7 +4,7 @@ import environment from "../config/environment";
 export class PgPool {
   private pool: Pool;
 
-  constructor() {
+  constructor(environment: Environment) {
     this.pool = new Pool({
       user: environment.DB_USER,
       host: environment.DB_HOST,
@@ -19,4 +19,4 @@ export class PgPool {
   }
 }
 
-export default new PgPool();
+export default new PgPool(environment);
