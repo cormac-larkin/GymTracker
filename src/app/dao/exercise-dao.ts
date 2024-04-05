@@ -1,7 +1,7 @@
 import BaseDao from "./base-dao";
 
 class ExerciseDao extends BaseDao {
-  public async getAllExercises(): Promise<Exercise[]> {
+  async getAllExercises(): Promise<Exercise[]> {
     const result = await this.connectionPool.query({
       text: `SELECT
             exercise_id AS id,
