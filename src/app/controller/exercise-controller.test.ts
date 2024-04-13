@@ -76,7 +76,7 @@ describe("ExerciseController", () => {
       expect(exerciseService.createExercise).toHaveBeenCalledWith(req.body);
     });
 
-    it("should build a response with a status of 200 and a body containing the value returned by the ExerciseService", async () => {
+    it("should build a response with a status of 201 and a body containing the value returned by the ExerciseService", async () => {
       req.body = { name: "Exercise 1", muscleGroup: "Legs" };
 
       const testExercise = { id: 1, name: "Exercise 1", muscleGroup: "Legs" };
