@@ -1,27 +1,24 @@
-import { MockProxy } from "jest-mock-extended";
+import { MockProxy, mock } from "jest-mock-extended";
 import ExerciseDao from "../dao/exercise-dao";
 import ExerciseService from "../service/exercise-service";
 import ExerciseController from "./exercise-controller";
 import { Request, Response } from "express";
-import { mock } from "jest-mock-extended";
 
 let req: Request;
 let res: Response;
 
-let exerciseDao: MockProxy<ExerciseDao>;
 let exerciseService: MockProxy<ExerciseService>;
 
 let exerciseController: ExerciseController;
 
 beforeEach(() => {
-  req = {} as unknown as Request;
+  req = { params: {} } as unknown as Request;
   res = {
     json: jest.fn(),
     status: jest.fn().mockReturnThis(),
   } as unknown as Response;
 
-  exerciseDao = mock<ExerciseDao>();
-  exerciseService = mock<ExerciseService>(exerciseDao);
+  exerciseService = mock<ExerciseService>();
 
   exerciseController = new ExerciseController(exerciseService);
 });
@@ -46,6 +43,28 @@ describe("ExerciseController", () => {
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith(testExercises);
+    });
+  });
+
+  describe("getExerciseById", () => {
+    it("should call the getExerciseById method of the ExerciseService with the correct id", async () => {
+      req.params.id = "1";
+
+      await exerciseController.getExerciseById(req, res);
+
+      expect(exerciseService.getExerciseById).toHaveBeenCalledWith("1");
+    });
+
+    it("should build a response with a status of 200 and a body containing the value returned by the ExerciseService", async () => {
+      req.params.id = "1";
+      const testExercise = { id: 1, name: "Exercise 1", muscleGroup: "Legs" };
+
+      exerciseService.getExerciseById.mockResolvedValue(testExercise);
+
+      await exerciseController.getExerciseById(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith(testExercise);
     });
   });
 });

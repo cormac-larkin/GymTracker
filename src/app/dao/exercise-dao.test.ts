@@ -56,4 +56,43 @@ describe("ExerciseDao", () => {
       await expect(exerciseDao.getAllExercises()).rejects.toThrow(error);
     });
   });
+
+  describe("getExerciseById", () => {
+    it("should query the database with the correct SQL query", async () => {
+      pgPool.query.mockResolvedValue(resultSet as QueryResult);
+
+      await exerciseDao.getExerciseById(1);
+
+      expect(pgPool.query).toHaveBeenCalledWith({
+        text: `SELECT
+            exercise_id AS id,
+            exercise.name AS name,
+            muscle_group.name AS \"muscleGroup\" 
+            FROM 
+            exercise
+            INNER JOIN
+            muscle_group
+            USING (muscle_group_id)
+            WHERE exercise_id = $1`,
+        values: [1],
+      });
+    });
+
+    it("should return the first value returned by the database query", async () => {
+      resultSet.rows = [{ id: 1, name: "Exercise 1", muscleGroup: "Legs" }];
+
+      pgPool.query.mockResolvedValue(resultSet as QueryResult);
+
+      const returnValue = await exerciseDao.getExerciseById(1);
+
+      expect(returnValue).toStrictEqual(resultSet.rows[0]);
+    });
+
+    it("should throw error if database error occurs", async () => {
+      const error = new Error("Database query failed");
+      pgPool.query.mockRejectedValue(error);
+
+      await expect(exerciseDao.getExerciseById(1)).rejects.toThrow(error);
+    });
+  });
 });
