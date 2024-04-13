@@ -3,6 +3,7 @@ import ExerciseDao from "../dao/exercise-dao";
 import { mock } from "jest-mock-extended";
 import { PgPool } from "../../postgres/pg-pool";
 import { QueryResult } from "pg";
+import { MuscleGroup } from "../@types";
 
 let pgPool: MockProxy<PgPool>;
 let exerciseDao: ExerciseDao;
@@ -93,6 +94,59 @@ describe("ExerciseDao", () => {
       pgPool.query.mockRejectedValue(error);
 
       await expect(exerciseDao.getExerciseById(1)).rejects.toThrow(error);
+    });
+  });
+
+  describe("createExercise", () => {
+    it("should query the database with the correct SQL queries", async () => {
+      resultSet.rows = [{ id: 1, name: "Exercise 1", muscleGroup: "Legs" }];
+      pgPool.query.mockResolvedValue(resultSet as QueryResult);
+
+      await exerciseDao.createExercise({ name: "Pullup", muscleGroup: "Back" });
+
+      expect(pgPool.query).toHaveBeenCalledWith({
+        text: `INSERT INTO
+              exercise 
+              (name, muscle_group_id)
+              VALUES
+              ($1, (SELECT muscle_group_id FROM muscle_group WHERE name = $2))
+              RETURNING exercise_id`,
+        values: ["Pullup", "Back"],
+      });
+    });
+
+    it("should return the newly created Exercise", async () => {
+      // Mock first query (to insert the new Exercise)
+      const firstQueryResult = { rows: [{ exercise_id: 1 }] };
+      pgPool.query.mockResolvedValueOnce(firstQueryResult as QueryResult);
+
+      // Mock second query (to retrieve the newly inserted Exercise)
+      const secondQueryResult = {
+        rows: [{ id: 1, name: "Pullup", muscleGroup: "Back" }],
+      };
+      pgPool.query.mockResolvedValue(secondQueryResult as QueryResult);
+
+      const returnValue = await exerciseDao.createExercise({
+        name: "Pullup",
+        muscleGroup: "Back",
+      });
+
+      expect(returnValue).toStrictEqual({
+        id: 1,
+        name: "Pullup",
+        muscleGroup: "Back",
+      });
+    });
+
+    it("should throw error if database error occurs", async () => {
+      const error = new Error("Database query failed");
+      pgPool.query.mockRejectedValue(error);
+
+      const submittedExercise = { name: "Pullup", muscleGroup: "Back" };
+
+      await expect(
+        exerciseDao.createExercise(submittedExercise)
+      ).rejects.toThrow(error);
     });
   });
 });

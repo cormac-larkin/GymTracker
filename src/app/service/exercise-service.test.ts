@@ -1,7 +1,7 @@
-import { MockProxy } from "jest-mock-extended";
+import { MockProxy, mock } from "jest-mock-extended";
 import ExerciseDao from "../dao/exercise-dao";
 import ExerciseService from "../service/exercise-service";
-import { mock } from "jest-mock-extended";
+import { CreateExercisePayload } from "../@types";
 
 let exerciseDao: MockProxy<ExerciseDao>;
 let exerciseService: ExerciseService;
@@ -65,5 +65,76 @@ describe("ExerciseService", () => {
         await expect(exerciseService.getExerciseById(input)).rejects.toThrow();
       }
     );
+  });
+
+  describe("createExercise", () => {
+    it("should call the createExercise method of the ExerciseDao", async () => {
+      const submittedExercise = { name: "Pullup", muscleGroup: "Back" };
+      await exerciseService.createExercise(submittedExercise);
+
+      expect(exerciseDao.createExercise).toHaveBeenCalledWith(
+        submittedExercise
+      );
+    });
+
+    it("should return the newly created exercise object", async () => {
+      const submittedExercise = { name: "Pullup", muscleGroup: "Back" };
+
+      exerciseDao.createExercise.mockResolvedValue({
+        id: 1,
+        ...submittedExercise,
+      });
+
+      const result = await exerciseService.createExercise(submittedExercise);
+
+      expect(result).toStrictEqual({
+        id: 1,
+        ...submittedExercise,
+      });
+    });
+
+    it("should throw an error for missing 'name' property", async () => {
+      const invalidExercise = {
+        name: undefined,
+        muscleGroup: "Back",
+      } as unknown as CreateExercisePayload;
+
+      await expect(
+        exerciseService.createExercise(invalidExercise)
+      ).rejects.toThrow();
+    });
+
+    it("should throw an error if 'name' too long", async () => {
+      const invalidExercise = {
+        name: "A".repeat(51),
+        muscleGroup: "Back",
+      } as unknown as CreateExercisePayload;
+
+      await expect(
+        exerciseService.createExercise(invalidExercise)
+      ).rejects.toThrow();
+    });
+
+    it("should throw an error for missing 'muscleGroup' property", async () => {
+      const invalidExercise = {
+        name: "Pullup",
+        muscleGroup: undefined,
+      } as unknown as CreateExercisePayload;
+
+      await expect(
+        exerciseService.createExercise(invalidExercise)
+      ).rejects.toThrow();
+    });
+
+    it("should throw an error if 'muscleGroup' is not a valid Muscle Group", async () => {
+      const invalidExercise = {
+        name: "Pullup",
+        muscleGroup: "Invalid",
+      } as unknown as CreateExercisePayload;
+
+      await expect(
+        exerciseService.createExercise(invalidExercise)
+      ).rejects.toThrow();
+    });
   });
 });

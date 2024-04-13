@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import ExerciseService from "../service/exercise-service";
+import { CreateExercisePayload } from "../@types";
 
 class ExerciseController {
   private readonly exerciseService: ExerciseService;
@@ -17,6 +18,12 @@ class ExerciseController {
     const id = req.params.id;
     const exercise = await this.exerciseService.getExerciseById(id);
     return res.status(200).json(exercise);
+  }
+
+  async createExercise(req: Request, res: Response) {
+    const payload: CreateExercisePayload = req.body;
+    const newExercise = await this.exerciseService.createExercise(payload);
+    return res.status(201).json(newExercise);
   }
 }
 

@@ -1,5 +1,6 @@
 import { Pool } from "pg";
 import { PgPool } from "./pg-pool";
+import { Environment } from "../app/@types";
 
 jest.mock("pg");
 

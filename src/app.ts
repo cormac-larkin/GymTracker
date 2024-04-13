@@ -3,8 +3,11 @@ import environment from "./config/environment";
 import { exerciseRouter } from "./app/routes";
 import { handleError } from "./app/middleware/handle-error";
 
-const app = express();
 const PORT = environment.APPLICATION_PORT;
+
+const app = express();
+
+app.use(express.json());
 
 app.use("/exercises", exerciseRouter);
 
