@@ -43,8 +43,8 @@ jobs:
           node-version: 18.x
           cache: "npm"
 
-      - name: Install dependencies
-        run: npm i jest ts-jest ts-node
+      - name: Install test dependencies
+        run: npm i jest ts-node
 
       - name: Run unit tests
         run: npm test
