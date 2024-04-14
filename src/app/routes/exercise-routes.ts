@@ -26,4 +26,12 @@ router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
+router.post("/", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    return await exerciseController.createExercise(req, res);
+  } catch (err) {
+    return next(err);
+  }
+});
+
 export { router as exerciseRouter };

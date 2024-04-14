@@ -56,7 +56,7 @@ describe("handle-error middleware", () => {
     expect(res.json).toHaveBeenCalledWith({ message: "Invalid data provided" });
   });
 
-  it("should log the correct error message and construct response with 400 status code for a not-found error", () => {
+  it("should log the correct error message and construct response with 404 status code for a not-found error", () => {
     req.originalUrl = "/test";
     err = new NotFoundError("Resource not found");
 

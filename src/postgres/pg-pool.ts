@@ -1,5 +1,6 @@
 import { Pool, QueryConfig, QueryResult } from "pg";
 import environment from "../config/environment";
+import { Environment } from "../app/@types";
 
 export class PgPool {
   private pool: Pool;

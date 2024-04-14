@@ -6,4 +6,4 @@ function validateId(id: number) {
   }
 }
 
-export default validateId;
+export { validateId };

@@ -1,6 +1,7 @@
+import { Exercise, CreateExercisePayload } from "../@types";
 import ExerciseDao from "../dao/exercise-dao";
-import { NotFoundError } from "../errors/not-found-error";
-import validateId from "../validation/validate-id";
+import { NotFoundError } from "../errors";
+import { validateId, validateExercise } from "../validation";
 
 class ExerciseService {
   private readonly exerciseDao: ExerciseDao;
@@ -26,6 +27,14 @@ class ExerciseService {
     }
 
     return exercise;
+  }
+
+  async createExercise(exercise: CreateExercisePayload): Promise<Exercise> {
+    validateExercise(exercise);
+
+    const newExercise = await this.exerciseDao.createExercise(exercise);
+
+    return newExercise;
   }
 }
 
