@@ -3,7 +3,7 @@ import { ErrorRequestHandler } from "express-serve-static-core";
 import { RestError } from "../errors/rest-error";
 
 export const handleError: ErrorRequestHandler = (
-  err: unknown,
+  err: any,
   req: Request,
   res: Response,
   next: NextFunction
@@ -15,6 +15,11 @@ export const handleError: ErrorRequestHandler = (
 
   if (err instanceof RestError) {
     return res.status(err.statusCode).json({ message: err.message });
+  }
+
+  // Handle errors from bodyParser
+  if (err.statusCode) {
+    return res.sendStatus(err.statusCode);
   }
 
   return res.sendStatus(500);
