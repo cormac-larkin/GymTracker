@@ -149,4 +149,22 @@ describe("ExerciseDao", () => {
       ).rejects.toThrow(error);
     });
   });
+
+  describe("deleteExercise", () => {
+    it("should query the database with the correct SQL query", async () => {
+      await exerciseDao.deleteExercise(1);
+
+      expect(pgPool.query).toHaveBeenCalledWith({
+        text: "DELETE FROM exercise WHERE exercise_id = $1",
+        values: [1],
+      });
+    });
+
+    it("should throw error if database error occurs", async () => {
+      const error = new Error("Database query failed");
+      pgPool.query.mockRejectedValue(error);
+
+      await expect(exerciseDao.deleteExercise(1)).rejects.toThrow(error);
+    });
+  });
 });
