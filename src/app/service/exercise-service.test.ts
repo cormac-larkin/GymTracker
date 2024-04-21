@@ -2,6 +2,7 @@ import { MockProxy, mock } from "jest-mock-extended";
 import ExerciseDao from "../dao/exercise-dao";
 import ExerciseService from "../service/exercise-service";
 import { CreateExercisePayload } from "../@types";
+import { NotFoundError } from "../errors";
 
 let exerciseDao: MockProxy<ExerciseDao>;
 let exerciseService: ExerciseService;
@@ -135,6 +136,28 @@ describe("ExerciseService", () => {
       await expect(
         exerciseService.createExercise(invalidExercise)
       ).rejects.toThrow();
+    });
+  });
+
+  describe("deleteExercise", () => {
+    it("should call the deleteExercise method of the ExerciseDao with the correct value if the exercise exists", async () => {
+      const testExercise = { id: 1, name: "Exercise 1", muscleGroup: "Legs" };
+      jest
+        .spyOn(exerciseService, "getExerciseById")
+        .mockResolvedValueOnce(testExercise);
+
+      await exerciseService.deleteExercise("1");
+
+      expect(exerciseDao.deleteExercise).toHaveBeenCalledWith(1);
+    });
+
+    it("should throw error if the exercise does not exist", async () => {
+      const error = new NotFoundError("Exercise does not exist");
+      jest
+        .spyOn(exerciseService, "getExerciseById")
+        .mockRejectedValueOnce(error);
+
+      await expect(exerciseService.deleteExercise("1")).rejects.toThrow(error);
     });
   });
 });

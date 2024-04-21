@@ -36,6 +36,13 @@ class ExerciseService {
 
     return newExercise;
   }
+
+  async deleteExercise(id: string): Promise<void> {
+    // Throws not-found error if ID does not exist
+    await this.getExerciseById(id);
+
+    await this.exerciseDao.deleteExercise(parseInt(id));
+  }
 }
 
 export default ExerciseService;

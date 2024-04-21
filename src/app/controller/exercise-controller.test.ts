@@ -15,6 +15,7 @@ beforeEach(() => {
   res = {
     json: jest.fn(),
     status: jest.fn().mockReturnThis(),
+    sendStatus: jest.fn(),
   } as unknown as Response;
 
   exerciseService = mock<ExerciseService>();
@@ -86,6 +87,24 @@ describe("ExerciseController", () => {
 
       expect(res.status).toHaveBeenCalledWith(201);
       expect(res.json).toHaveBeenCalledWith(testExercise);
+    });
+  });
+
+  describe("deleteExercise", () => {
+    it("should call the deleteExercise method of the ExerciseService with the correct id", async () => {
+      req.params.id = "1";
+
+      await exerciseController.deleteExercise(req, res);
+
+      expect(exerciseService.deleteExercise).toHaveBeenCalledWith("1");
+    });
+
+    it("should build a response with a status of 204", async () => {
+      req.params.id = "1";
+
+      await exerciseController.deleteExercise(req, res);
+
+      expect(res.sendStatus).toHaveBeenCalledWith(204);
     });
   });
 });

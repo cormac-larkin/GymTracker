@@ -25,6 +25,12 @@ class ExerciseController {
     const newExercise = await this.exerciseService.createExercise(payload);
     return res.status(201).json(newExercise);
   }
+
+  async deleteExercise(req: Request, res: Response) {
+    const id = req.params.id;
+    await this.exerciseService.deleteExercise(id);
+    return res.sendStatus(204);
+  }
 }
 
 export default ExerciseController;

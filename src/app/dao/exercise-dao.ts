@@ -56,6 +56,13 @@ class ExerciseDao extends BaseDao {
 
     return createdExercise as Exercise;
   }
+
+  async deleteExercise(id: number): Promise<void> {
+    await this.connectionPool.query({
+      text: "DELETE FROM exercise WHERE exercise_id = $1",
+      values: [id],
+    });
+  }
 }
 
 export default ExerciseDao;

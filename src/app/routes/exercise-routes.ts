@@ -34,4 +34,15 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
+router.delete(
+  "/:id",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return await exerciseController.deleteExercise(req, res);
+    } catch (err) {
+      return next(err);
+    }
+  }
+);
+
 export { router as exerciseRouter };
